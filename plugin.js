@@ -41,6 +41,7 @@ module.exports = {
     version
   },
   rules: {
+    'member-ordering': require('./rules/member-ordering'),
     'angular-template-spacing': {
       meta: {
         type: 'layout',

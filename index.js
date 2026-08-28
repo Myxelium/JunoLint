@@ -19,6 +19,7 @@ const DEFAULT_IGNORES = [
 
 const typescriptRules = {
   'junolint/no-unicode-symbols': 'error',
+  'junolint/member-ordering': 'error',
   '@typescript-eslint/no-extraneous-class': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off',
   '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
