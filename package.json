@@ -1,0 +1,56 @@
+{
+  "name": "junolint",
+  "version": "1.0.0",
+  "description": "Shareable ESLint flat config and custom rules for JunoLint style",
+  "keywords": [
+    "eslint",
+    "eslintconfig",
+    "eslint-config",
+    "eslint-plugin",
+    "junolint"
+  ],
+  "license": "MIT",
+  "author": "Myxelium Name <info@azaaxin.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Myxelium/JunoLint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Myxelium/JunoLint/issues"
+  },
+  "homepage": "https://github.com/Myxelium/JunoLint#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./plugin": "./plugin.js"
+  },
+  "files": [
+    "index.js",
+    "plugin.js"
+  ],
+  "scripts": {
+    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\""
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0",
+    "typescript": ">=5.0.0"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.39.3",
+    "@stylistic/eslint-plugin-js": "^4.4.1",
+    "@stylistic/eslint-plugin-ts": "^4.4.1",
+    "angular-eslint": "21.2.0",
+    "eslint-plugin-import-newlines": "^1.4.1",
+    "typescript-eslint": "8.50.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "typescript": "~5.9.2"
+  }
+}
