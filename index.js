@@ -132,8 +132,24 @@ const angularTypescriptRules = {
   '@angular-eslint/directive-class-suffix': 'error'
 };
 
+// Matches metoyou/tools/sort-template-properties.js:
+// outputs → two-way → #ref → inputs → attributes.
+// STRUCTURAL_DIRECTIVE is required by the rule schema (*ngIf / @if extras).
+const TEMPLATE_ATTRIBUTE_ORDER = [
+  'STRUCTURAL_DIRECTIVE',
+  'OUTPUT_BINDING',
+  'TWO_WAY_BINDING',
+  'TEMPLATE_REFERENCE',
+  'INPUT_BINDING',
+  'ATTRIBUTE_BINDING'
+];
+
 const angularTemplateRules = {
   'junolint/no-unicode-symbols': 'error',
+  '@angular-eslint/template/attributes-order': ['error', {
+    alphabetical: false,
+    order: TEMPLATE_ATTRIBUTE_ORDER
+  }],
   '@angular-eslint/template/button-has-type': 'warn',
   '@angular-eslint/template/cyclomatic-complexity': ['warn', { maxComplexity: 10 }],
   '@angular-eslint/template/eqeqeq': 'error',
@@ -199,6 +215,7 @@ const recommended = createConfig();
 module.exports = recommended;
 module.exports.config = createConfig;
 module.exports.plugin = plugin;
+module.exports.TEMPLATE_ATTRIBUTE_ORDER = TEMPLATE_ATTRIBUTE_ORDER;
 module.exports.configs = {
   recommended,
   typescript: createConfig({ angular: false })

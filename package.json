@@ -1,6 +1,6 @@
 {
   "name": "junolint",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Shareable ESLint flat config and custom rules for JunoLint style",
   "keywords": [
     "eslint",
@@ -32,7 +32,7 @@
     "plugin.js"
   ],
   "scripts": {
-    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\""
+    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js"
   },
   "engines": {
     "node": ">=18.18.0"

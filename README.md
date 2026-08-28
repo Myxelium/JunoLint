@@ -68,6 +68,7 @@ The config already registers the plugin as `junolint`. Available rules:
 | Rule | Default |
 | --- | --- |
 | `junolint/no-unicode-symbols` | error |
+| `@angular-eslint/template/attributes-order` | error (outputs → two-way → `#ref` → inputs → attributes). `eslint --fix` reorders **that element only** |
 | `junolint/no-maybe-in-naming` | off |
 | `junolint/angular-template-spacing` | off (placeholder) |
 
