@@ -2,11 +2,11 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-main
   cancel-in-progress: false
 
 permissions:
@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -29,26 +31,30 @@ jobs:
       - run: npm ci
       - run: npm test
 
-      - name: Check git tag matches package.json
+      - name: Publish to npm when the version is new
+        id: publish
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          PKG="$(node -p "require('./package.json').version")"
+          NAME="$(node -p "require('./package.json').name")"
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
-          if [ "$TAG" != "$PKG" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match package.json version $PKG"
-            exit 1
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+            echo "${NAME}@${VERSION} is already on npm"
+            exit 0
           fi
 
-      # Do not set registry-url / NODE_AUTH_TOKEN here. That writes an empty
-      # _authToken into .npmrc and blocks npm's GitHub OIDC exchange.
-      - name: Publish to npm
-        run: npm publish --access public
+          echo "already_published=false" >> "$GITHUB_OUTPUT"
+          # Do not set registry-url / NODE_AUTH_TOKEN. That writes an empty
+          # _authToken into .npmrc and blocks npm's GitHub OIDC exchange.
+          npm publish --access public
 
       - name: Create GitHub Release
+        if: steps.publish.outputs.already_published == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            --title "$GITHUB_REF_NAME" \
-            --generate-notes \
-            --verify-tag
+          gh release create "v${{ steps.publish.outputs.version }}" \
+            --target "${GITHUB_SHA}" \
+            --title "v${{ steps.publish.outputs.version }}" \
+            --generate-notes

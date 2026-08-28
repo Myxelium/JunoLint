@@ -86,13 +86,13 @@ module.exports = [
 
 ## Publish (GitHub → npm)
 
-Releases are cut from [github.com/Myxelium/JunoLint](https://github.com/Myxelium/JunoLint) only. Pushing a version tag `vX.Y.Z` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): tests, `npm publish` via [trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC, no npm token), then a GitHub Release. Gitea can mirror the git repo; it is not used to publish.
+Pushing `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): tests, then `npm publish` via [trusted publishing](https://docs.npmjs.com/trusted-publishers/) if `package.json` has a version that is not on npm yet, then a GitHub Release. Gitea can mirror the git repo; it is not used to publish.
 
 ### Cut a release
 
-```bash
-npm version patch   # or minor / major — bumps package.json, commits, tags vX.Y.Z
-git push origin main --follow-tags
-```
+Bump the version in `package.json` and push `main`:
 
-The tag must match `package.json` (`v1.0.0` ↔ `"version": "1.0.0"`). The workflow will fail if they differ.
+```bash
+npm version patch   # or minor / major — bumps package.json and commits
+git push origin main
+```
