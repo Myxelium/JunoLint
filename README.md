@@ -86,22 +86,6 @@ module.exports = [
 
 Releases are cut from [github.com/Myxelium/JunoLint](https://github.com/Myxelium/JunoLint) only. Pushing a version tag `vX.Y.Z` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): tests, `npm publish` via [trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC, no npm token), then a GitHub Release. Gitea can mirror the git repo; it is not used to publish.
 
-### One-time npm setup
-
-1. Log in at [npmjs.com](https://www.npmjs.com/).
-2. Open **Packages** → **junolint**. If the package does not exist yet, use **Trusted Publisher** / add a publisher for the name `junolint` (npm lets you configure this before the first publish).
-3. Publisher: **GitHub Actions**. Fill in:
-
-| Field | Value |
-| --- | --- |
-| Organization or user | `Myxelium` |
-| Repository | `JunoLint` |
-| Workflow filename | `release.yml` |
-| Environment name | leave empty |
-| Allowed actions | `npm publish` |
-
-Do not add an `NPM_TOKEN` secret. The workflow authenticates with GitHub OIDC.
-
 ### Cut a release
 
 ```bash
