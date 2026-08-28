@@ -42,21 +42,9 @@ module.exports = {
   },
   rules: {
     'member-ordering': require('./rules/member-ordering'),
-    'angular-template-spacing': {
-      meta: {
-        type: 'layout',
-        docs: {
-          description: 'Enforce spacing between elements and property grouping in Angular templates',
-          category: 'Stylistic Issues',
-          recommended: true
-        },
-        fixable: 'whitespace',
-        schema: []
-      },
-      create() {
-        return {};
-      }
-    },
+    'template-sibling-spacing': require('./rules/template-sibling-spacing'),
+    'template-max-nesting': require('./rules/template-max-nesting'),
+    'template-attribute-wrapping': require('./rules/template-attribute-wrapping'),
     'no-maybe-in-naming': {
       meta: {
         type: 'suggestion',

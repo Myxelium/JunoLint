@@ -70,8 +70,10 @@ The config already registers the plugin as `junolint`. Available rules:
 | `junolint/no-unicode-symbols` | error |
 | `junolint/member-ordering` | error. Fields/`inject()` keep source order; then constructor, lifecycle, methods (public → private). `eslint --fix` does not reorder fields |
 | `@angular-eslint/template/attributes-order` | error (outputs → two-way → `#ref` → inputs → attributes). `eslint --fix` reorders **that element only** |
+| `junolint/template-sibling-spacing` | error. Blank line between **multiline** siblings; single-line siblings stay packed. Indentation matches the file (tabs vs spaces, and the step size). No extra blank line after `<parent>` or before `</parent>`. `eslint --fix` |
+| `junolint/template-max-nesting` | warn. Max 7 real elements from the template root. `@if` / `@for` / `@switch` / `@defer` / `ng-container` / `ng-template` do not count. Suggests extracting a component |
+| `junolint/template-attribute-wrapping` | error. 3+ attributes: one per line, `>` on its own line, indented with the file's indent. 1–2 stay on one line. `eslint --fix` |
 | `junolint/no-maybe-in-naming` | off |
-| `junolint/angular-template-spacing` | off (placeholder) |
 
 ```js
 module.exports = [

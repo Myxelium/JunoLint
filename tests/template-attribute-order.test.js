@@ -52,6 +52,7 @@ async function main() {
     '    class="save"',
     '    type="button"',
     '  >Save</button>',
+    '',
     '  <button',
     '    (click)="cancel()"',
     '    [disabled]="false"',

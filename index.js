@@ -147,6 +147,9 @@ const TEMPLATE_ATTRIBUTE_ORDER = [
 
 const angularTemplateRules = {
   'junolint/no-unicode-symbols': 'error',
+  'junolint/template-sibling-spacing': 'error',
+  'junolint/template-max-nesting': 'warn',
+  'junolint/template-attribute-wrapping': 'error',
   '@angular-eslint/template/attributes-order': ['error', {
     alphabetical: false,
     order: TEMPLATE_ATTRIBUTE_ORDER
