@@ -1,6 +1,6 @@
 {
   "name": "junolint",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Shareable ESLint flat config and custom rules for JunoLint style",
   "keywords": [
     "eslint",
@@ -42,13 +42,19 @@
     "plugin.js",
     "plugin.d.ts",
     "rules/member-ordering.js",
+    "rules/class-field-groups.js",
+    "rules/grouped-class-fields.js",
+    "rules/prefer-sentence-names.js",
+    "rules/prefer-sentence-function-names.js",
+    "rules/no-leading-the.js",
+    "rules/decompose-complex-expressions.js",
     "rules/template-utils.js",
     "rules/template-sibling-spacing.js",
     "rules/template-max-nesting.js",
     "rules/template-attribute-wrapping.js"
   ],
   "scripts": {
-    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js && node tests/member-ordering.test.js && node tests/template-layout.test.js"
+    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js && node tests/member-ordering.test.js && node tests/grouped-class-fields.test.js && node tests/template-layout.test.js && node tests/prefer-sentence-names.test.js && node tests/prefer-sentence-function-names.test.js && node tests/no-leading-the.test.js && node tests/decompose-complex-expressions.test.js"
   },
   "engines": {
     "node": ">=18.18.0"

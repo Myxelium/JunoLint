@@ -1,5 +1,7 @@
 'use strict';
 
+const { shouldPackFields } = require('./class-field-groups');
+
 const LIFECYCLE = Object.freeze([
   'ngOnChanges',
   'ngOnInit',
@@ -136,6 +138,18 @@ function memberText(sourceCode, node) {
   return sourceCode.getText(node);
 }
 
+function joinMembers(sourceCode, members, indent) {
+  return members.map((member, index) => {
+    const line = `${indent}${memberText(sourceCode, member)}`;
+
+    if (index === 0)
+      return line;
+
+    const packed = shouldPackFields(members[index - 1], member);
+    return `${packed ? '\n' : '\n\n'}${line}`;
+  }).join('');
+}
+
 module.exports = {
   meta: {
     type: 'layout',
@@ -175,7 +189,7 @@ module.exports = {
           messageId: 'incorrectOrder',
           data: { name: memberName(firstWrong) || firstWrong.type },
           fix(fixer) {
-            const body = ordered.map((member) => `${indent}${memberText(sourceCode, member)}`).join('\n\n');
+            const body = joinMembers(sourceCode, ordered, indent);
             return fixer.replaceTextRange([open.range[1], close.range[0]], `\n${body}\n`);
           }
         });

@@ -13,27 +13,16 @@
 
 # JunoLint
 
-JunoLint is an opinionated linter for **Angular**. Drop it into a project and it checks TypeScript and HTML templates the same way every time: how components are structured, how template attributes are ordered and wrapped, how deep markup may nest, and how class members are arranged so `inject()` field init stays valid. Most layout rules auto-fix with `eslint --fix`.
+ESLint 9 config for Angular. It lints TypeScript and HTML templates: attribute order and wrapping, sibling spacing, nesting depth, class member order, grouped class fields, and a few naming rules. Most layout rules fix themselves with `eslint --fix`.
 
 ```js
 // eslint.config.js
 module.exports = require('junolint');
 ```
 
-That is the whole config. Templates, components, and TypeScript all lint with one setup.
+ESLint is a peer dependency. `junolint` brings typescript-eslint, angular-eslint, and the stylistic plugins with it.
 
-## What it does
-
-Out of the box it:
-
-- Lints `*.ts` with TypeScript ESLint (recommended + stylistic + strict) and Angular component/directive conventions
-- Lints `*.html` with `angular-eslint` template + accessibility rules
-- Formats Angular templates: attribute order, wrapping, sibling spacing, and a nesting-depth warning
-- Enforces a class member order that keeps `inject()` field init valid
-- Blocks AI-style Unicode punctuation (`→`, `…`, en/em dashes) in favor of ASCII
-- Rejects identifiers that contain `maybe` (for example `maybeUser`)
-
-TypeScript-only projects can skip the Angular template layer (see [TypeScript only](#typescript-only-no-angular)).
+Full rule list and options: [RULES.md](RULES.md).
 
 ## Install
 
@@ -41,15 +30,13 @@ TypeScript-only projects can skip the Angular template layer (see [TypeScript on
 npm install -D eslint junolint
 ```
 
-`eslint` is a peer dependency so your `lint` script can run it. JunoLint pulls in the rest (`typescript-eslint`, `angular-eslint`, `@stylistic/*`, and so on), so other repos only need ESLint itself.
-
-From a sibling clone (unpublished / local):
+From a local clone:
 
 ```bash
 npm install -D eslint junolint@file:../JunoLint
 ```
 
-## Use
+## Setup
 
 CommonJS:
 
@@ -65,7 +52,7 @@ import junolint from 'junolint';
 export default junolint;
 ```
 
-### Extra ignores or different globs
+Extra ignores or different file globs:
 
 ```js
 const { config } = require('junolint');
@@ -77,13 +64,13 @@ module.exports = config({
 });
 ```
 
-### TypeScript only (no Angular)
+TypeScript only (no Angular templates):
 
 ```js
 module.exports = require('junolint').configs.typescript;
 ```
 
-### Layer project-specific bits on top
+Or spread the config and add your own bits:
 
 ```js
 module.exports = [
@@ -92,23 +79,51 @@ module.exports = [
 ];
 ```
 
-## Custom rules (before / after)
+## Changing a rule
 
-The config already registers the plugin as `junolint`. Most of these are `error` and auto-fix with `eslint --fix`.
+Spread the config, then set `rules`. Values are `'off'`, `'warn'`, `'error'`, or `[severity, options]`.
 
-### Attribute wrapping — `junolint/template-attribute-wrapping`
-
-**error.** 1–2 attributes stay on one line. 3+ attributes: one per line, `>` on its own line, indented with the file (tabs or spaces).
-
-**Before**
-
-```html
-<input class="field" [(ngModel)]="name" (blur)="onBlur()" />
+```js
+module.exports = [
+  ...require('junolint'),
+  {
+    files: ['**/*.html'],
+    rules: {
+      'junolint/template-sibling-spacing': 'off',
+      'junolint/template-attribute-wrapping': 'warn',
+      'junolint/template-max-nesting': ['error', { max: 5 }],
+      '@angular-eslint/template/prefer-ngsrc': 'error'
+    }
+  },
+  {
+    files: ['**/*.ts'],
+    rules: {
+      'junolint/no-maybe-in-naming': 'off',
+      'junolint/no-leading-the': 'off',
+      'junolint/prefer-sentence-names': ['warn', { minLength: 0 }],
+      'junolint/prefer-sentence-function-names': ['warn', { minLength: 0 }],
+      'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }],
+      '@typescript-eslint/no-explicit-any': 'warn'
+    }
+  }
+];
 ```
 
-**After** (`eslint --fix`)
+Works for any rule the config enables. See [RULES.md](RULES.md).
+
+## Custom rules
+
+These ship on the `junolint` plugin. Most are `error` and support `--fix`.
+
+### `junolint/template-attribute-wrapping`
+
+error. One or two attributes stay on one line. Three or more: one per line, `>` on its own line, same indent as the file.
 
 ```html
+<!-- before -->
+<input class="field" [(ngModel)]="name" (blur)="onBlur()" />
+
+<!-- after eslint --fix -->
 <input
   class="field"
   [(ngModel)]="name"
@@ -116,24 +131,20 @@ The config already registers the plugin as `junolint`. Most of these are `error`
 />
 ```
 
-### Attribute order — `@angular-eslint/template/attributes-order`
+### `@angular-eslint/template/attributes-order`
 
-**error.** Per element: outputs → two-way → `#ref` → inputs → attributes. `eslint --fix` reorders **that element only**.
-
-**Before**
+error. Per element: outputs, two-way, `#ref`, inputs, then attributes. `--fix` only touches that element.
 
 ```html
+<!-- before -->
 <button
   class="save"
   (click)="save()"
   [disabled]="busy"
   type="button"
 >
-```
 
-**After** (`eslint --fix`)
-
-```html
+<!-- after eslint --fix -->
 <button
   (click)="save()"
   [disabled]="busy"
@@ -142,13 +153,12 @@ The config already registers the plugin as `junolint`. Most of these are `error`
 >
 ```
 
-### Sibling spacing — `junolint/template-sibling-spacing`
+### `junolint/template-sibling-spacing`
 
-**error.** Blank line between **multiline** siblings; single-line siblings stay packed. No extra blank line after `<parent>` or before `</parent>`. Indentation matches the file.
-
-**Before**
+error. Blank line between multiline siblings. Single-line siblings stay packed. No extra blank line after `<parent>` or before `</parent>`. Indent follows the file.
 
 ```html
+<!-- before -->
 <section>
   <header>
     <h1>Title</h1>
@@ -157,11 +167,8 @@ The config already registers the plugin as `junolint`. Most of these are `error`
     <p>Body</p>
   </article>
 </section>
-```
 
-**After** (`eslint --fix`)
-
-```html
+<!-- after eslint --fix -->
 <section>
   <header>
     <h1>Title</h1>
@@ -173,7 +180,7 @@ The config already registers the plugin as `junolint`. Most of these are `error`
 </section>
 ```
 
-Packed (left as-is):
+Single-line siblings are left alone:
 
 ```html
 <nav>
@@ -182,17 +189,16 @@ Packed (left as-is):
 </nav>
 ```
 
-### Max nesting — `junolint/template-max-nesting`
+### `junolint/template-max-nesting`
 
-**warn.** Max 7 real elements from the template root. `@if` / `@for` / `@switch` / `@defer` / `ng-container` / `ng-template` do not count. Suggests extracting a component.
+warn. Max 7 real elements from the template root. `@if`, `@for`, `@switch`, `@defer`, `ng-container`, and `ng-template` do not count.
 
-### Member order — `junolint/member-ordering`
+### `junolint/member-ordering`
 
-**error.** Fields / `inject()` keep source order; then constructor, lifecycle, methods (public → private). `eslint --fix` does not reorder fields, so Angular field init stays valid.
-
-**Before**
+error. Fields and `inject()` keep the order you wrote them. Then constructor, lifecycle, public methods, private methods. `--fix` does not move fields.
 
 ```ts
+// before
 export class Example {
   save() {}
   private readonly http = inject(HttpClient);
@@ -200,11 +206,8 @@ export class Example {
   constructor() {}
   private helper() {}
 }
-```
 
-**After** (`eslint --fix`)
-
-```ts
+// after eslint --fix
 export class Example {
   private readonly http = inject(HttpClient);
 
@@ -218,13 +221,136 @@ export class Example {
 }
 ```
 
-### Unicode symbols — `junolint/no-unicode-symbols`
+### `junolint/grouped-class-fields`
 
-**error.** Replaces `–` `—` `…` `→` `←` and similar with ASCII (`-`, `...`, `->`, `<-`).
+error. Consecutive single-line class fields that share a top-level initializer call stay packed. Different calls get one blank line between groups. `input.required` counts as `input` (same for `viewChild.required` → `viewChild`). If a field already spans more than one line, blank lines around it are left alone. Fields are not reordered. Applies to every class. `--fix` adjusts blank lines.
 
-### `maybe` in names — `junolint/no-maybe-in-naming`
+```ts
+// before
+export class Example {
+  private readonly trackLinkApi = inject(TrackLinkApi);
 
-**error.** Identifiers like `maybeUser` are rejected. Use a name that states intent.
+  private readonly memberSession = inject(SessionService);
+
+  private readonly router = inject(Router);
+
+  readonly session = signal<GoogleStatus | null>(null);
+
+  readonly loadError = signal<string | null>(null);
+}
+
+// after eslint --fix
+export class Example {
+  private readonly trackLinkApi = inject(TrackLinkApi);
+  private readonly memberSession = inject(SessionService);
+  private readonly router = inject(Router);
+
+  readonly session = signal<GoogleStatus | null>(null);
+  readonly loadError = signal<string | null>(null);
+}
+```
+
+### `junolint/no-unicode-symbols`
+
+error. Replaces en/em dashes, `...` lookalikes, and arrows with ASCII (`-`, `...`, `->`, `<-`).
+
+### `junolint/no-maybe-in-naming`
+
+error. Names like `maybeUser` fail. Pick something that says what the value is.
+
+### `junolint/no-leading-the`
+
+error. Names must not start with the word `the`. `theHttpClient` fails; `themeStudio` passes because the first word is `theme`, not `the`. Applies to variables, parameters, class fields, functions, and methods.
+
+```ts
+// fails
+const theHttpClient = createClient();
+function theLoader() {}
+class Example {
+  theCache() {}
+}
+
+// passes: the is part of a longer word, or not the first word
+const themeStudio = createStudio();
+const theoreticalLimit = 1;
+function loadTheRecord() {}
+```
+
+### `junolint/prefer-sentence-names`
+
+off. Push self-explaining names so other developers can tell what a value is without hunting for context. A single word (`user`, `data`, `configuration`) fails. A sentence of two or more camelCase or snake_case words passes. Applies to variables, parameters, and class fields.
+
+`minLength` is an allowance, not a target: names shorter than it skip the check (`id`, `i`). Default is `0`, so short names are flagged.
+
+```ts
+// fails when enabled: other people cannot tell what this is
+const user = load();
+const data = load();
+const configuration = load();
+
+// passes: the name is the explanation
+const theCurrentlyLoggedInUser = load();
+const payloadFromTheServer = load();
+```
+
+```js
+'junolint/prefer-sentence-names': ['warn', { minLength: 0, exceptions: ['timestamp'] }]
+```
+
+### `junolint/prefer-sentence-function-names`
+
+off. Same idea as `prefer-sentence-names`, for functions and methods. A single word (`save`, `load`, `configuration`) fails. A sentence of two or more camelCase or snake_case words passes. Applies to function declarations, class methods, object methods, and interface method signatures. Constructors are skipped. Variables and class fields stay with `prefer-sentence-names`.
+
+```ts
+// fails when enabled
+function save() {}
+class Example {
+  load() {}
+}
+
+// passes
+function saveTheDocument() {}
+class Example {
+  loadTheRecord() {}
+}
+```
+
+```js
+'junolint/prefer-sentence-function-names': ['warn', { minLength: 0, exceptions: ['timestamp'] }]
+```
+
+### `junolint/decompose-complex-expressions`
+
+off. Suggests extracting independent or nested computations into named steps. It does not count function calls, chain length, or AST nodes. Fluent APIs, array pipelines, Promise chains, and RxJS `pipe` are one compositional unit; complexity inside a stage is what matters. Two nested calls (`formatDate(parseDate(input))`) and object literals with several simple properties stay intact.
+
+Enable it yourself. It is not on in the default config.
+
+```ts
+// fails when enabled: several independent computations in one expression
+const result = createReport(
+  calculateRevenue(orders),
+  calculateExpenses(expenses),
+  formatDate(startDate),
+  getUserName(user)
+);
+
+// fails when enabled: nested transformations with no names
+const result = formatUser(normalizeUser(calculateUserScore(user)));
+
+// passes: fluent / pipeline composition
+const names = users.filter(isActive).map(user => user.name);
+const users$ = source$.pipe(filter(isActive), map(toUser), shareReplay(1));
+
+// passes: a natural two-step wrap, lookups, short conditions
+const parsed = formatDate(parseDate(input));
+const canProceed = user?.active && hasPermission(user);
+```
+
+```js
+'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }]
+```
+
+Raise `threshold` to complain less. There is no `--fix`; automatic extraction is unsafe around side effects and short-circuiting.
 
 | Rule | Default | `--fix` |
 | --- | --- | --- |
@@ -233,52 +359,10 @@ export class Example {
 | `junolint/template-sibling-spacing` | error | yes |
 | `junolint/template-max-nesting` | warn | no |
 | `junolint/member-ordering` | error | yes (not fields) |
+| `junolint/grouped-class-fields` | error | yes |
 | `junolint/no-unicode-symbols` | error | yes |
 | `junolint/no-maybe-in-naming` | error | no |
-
-## Turn rules on, off, or change them
-
-JunoLint is a flat config array. Spread it, then add a block whose `rules` override the defaults. Use `'off'`, `'warn'`, `'error'`, or `[severity, options]`.
-
-```js
-module.exports = [
-  ...require('junolint'),
-  {
-    files: ['**/*.html'],
-    rules: {
-      // turn off
-      'junolint/template-sibling-spacing': 'off',
-      // downgrade
-      'junolint/template-attribute-wrapping': 'warn',
-      // change options
-      'junolint/template-max-nesting': ['error', { max: 5 }],
-      // override a bundled angular-eslint rule
-      '@angular-eslint/template/prefer-ngsrc': 'error'
-    }
-  },
-  {
-    files: ['**/*.ts'],
-    rules: {
-      // turn off
-      'junolint/no-maybe-in-naming': 'off',
-      // relax a bundled TypeScript rule
-      '@typescript-eslint/no-explicit-any': 'warn'
-    }
-  }
-];
-```
-
-The same pattern works for any rule this package turns on (`@typescript-eslint/*`, `@angular-eslint/*`, `@stylistic/*`, and so on). Defaults live in [`index.js`](index.js).
-
-## Publish (GitHub → npm)
-
-Pushing `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): tests, then `npm publish` via [trusted publishing](https://docs.npmjs.com/trusted-publishers/) if `package.json` has a version that is not on npm yet, then a GitHub Release. Gitea can mirror the git repo; it is not used to publish.
-
-### Cut a release
-
-Bump the version in `package.json` and push `main`:
-
-```bash
-npm version patch   # or minor / major — bumps package.json and commits
-git push origin main
-```
+| `junolint/no-leading-the` | error | no |
+| `junolint/prefer-sentence-names` | off | no |
+| `junolint/prefer-sentence-function-names` | off | no |
+| `junolint/decompose-complex-expressions` | off | no |

@@ -56,8 +56,11 @@ async function main() {
   const injectFixed = await lintTs(injectSafe, true);
   const injectOutput = injectFixed.output ?? injectSafe;
 
-  assert.match(injectOutput, /private readonly http = inject\(HttpClient\);\s+public readonly router = inject\(Router\);/);
-  assert.match(injectOutput, /save\(\) \{\}\s+private helper\(\) \{\}/);
+  assert.match(
+    injectOutput,
+    /private readonly http = inject\(HttpClient\);\n  public readonly router = inject\(Router\);/
+  );
+  assert.match(injectOutput, /save\(\) \{\}\n\n  private helper\(\) \{\}/);
   assert.ok(
     injectOutput.indexOf('http = inject') < injectOutput.indexOf('router = inject'),
     'inject() fields must keep source order'
@@ -77,7 +80,7 @@ async function main() {
 
   assert.match(
     movedOutput,
-    /private readonly http = inject\(HttpClient\);\s+private readonly store = inject\(Store\);\s+save\(\) \{\}/
+    /private readonly http = inject\(HttpClient\);\n  private readonly store = inject\(Store\);\n\n  save\(\) \{\}/
   );
 
   const alreadyOk = [

@@ -42,6 +42,11 @@ module.exports = {
   },
   rules: {
     'member-ordering': require('./rules/member-ordering'),
+    'grouped-class-fields': require('./rules/grouped-class-fields'),
+    'prefer-sentence-names': require('./rules/prefer-sentence-names'),
+    'prefer-sentence-function-names': require('./rules/prefer-sentence-function-names'),
+    'no-leading-the': require('./rules/no-leading-the'),
+    'decompose-complex-expressions': require('./rules/decompose-complex-expressions'),
     'template-sibling-spacing': require('./rules/template-sibling-spacing'),
     'template-max-nesting': require('./rules/template-max-nesting'),
     'template-attribute-wrapping': require('./rules/template-attribute-wrapping'),

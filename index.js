@@ -20,7 +20,12 @@ const DEFAULT_IGNORES = [
 const typescriptRules = {
   'junolint/no-unicode-symbols': 'error',
   'junolint/no-maybe-in-naming': 'error',
+  'junolint/no-leading-the': 'error',
+  'junolint/prefer-sentence-names': 'off',
+  'junolint/prefer-sentence-function-names': 'off',
+  'junolint/decompose-complex-expressions': 'off',
   'junolint/member-ordering': 'error',
+  'junolint/grouped-class-fields': 'error',
   '@typescript-eslint/no-extraneous-class': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off',
   '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
