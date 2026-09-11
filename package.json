@@ -1,6 +1,6 @@
 {
   "name": "junolint",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Shareable ESLint flat config and custom rules for JunoLint style",
   "keywords": [
     "eslint",
@@ -37,6 +37,7 @@
     }
   },
   "files": [
+    "RULES.md",
     "index.js",
     "index.d.ts",
     "plugin.js",
@@ -47,17 +48,23 @@
     "rules/prefer-sentence-names.js",
     "rules/prefer-sentence-function-names.js",
     "rules/no-leading-the.js",
+    "rules/no-magic-numbers.js",
+    "rules/no-deprecated.js",
     "rules/decompose-complex-expressions.js",
+    "rules/component-own-folder.js",
+    "rules/component-max-external-types.js",
+    "rules/explicit-function-return-type.js",
+    "rules/sort-imports.js",
     "rules/template-utils.js",
     "rules/template-sibling-spacing.js",
     "rules/template-max-nesting.js",
     "rules/template-attribute-wrapping.js"
   ],
   "scripts": {
-    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js && node tests/member-ordering.test.js && node tests/grouped-class-fields.test.js && node tests/template-layout.test.js && node tests/prefer-sentence-names.test.js && node tests/prefer-sentence-function-names.test.js && node tests/no-leading-the.test.js && node tests/decompose-complex-expressions.test.js"
+    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js && node tests/member-ordering.test.js && node tests/grouped-class-fields.test.js && node tests/template-layout.test.js && node tests/prefer-sentence-names.test.js && node tests/prefer-sentence-function-names.test.js && node tests/no-leading-the.test.js && node tests/no-magic-numbers.test.js && node tests/no-deprecated.test.js && node tests/decompose-complex-expressions.test.js && node tests/stylistic-migration.test.js && node tests/component-own-folder.test.js && node tests/component-max-external-types.test.js && node tests/explicit-function-return-type.test.js && node tests/sort-imports.test.js"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=20.19.0"
   },
   "peerDependencies": {
     "eslint": "^9.0.0",
@@ -65,8 +72,7 @@
   },
   "dependencies": {
     "@eslint/js": "^9.39.3",
-    "@stylistic/eslint-plugin-js": "^4.4.1",
-    "@stylistic/eslint-plugin-ts": "^4.4.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "angular-eslint": "21.2.0",
     "eslint-plugin-import-newlines": "^1.4.1",
     "typescript-eslint": "8.50.1"

@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/junolint-logo.png" alt="JunoLint logo" width="180">
+  <img src="https://raw.githubusercontent.com/Myxelium/JunoLint/main/assets/junolint-logo.png" alt="JunoLint logo" width="180">
 </p>
 
 <p align="center">
-  <img src="assets/junoLintText.png" alt="JunoLint" width="360">
+  <img src="https://raw.githubusercontent.com/Myxelium/JunoLint/main/assets/junoLintText.png" alt="JunoLint" width="360">
 </p>
 
 <p align="center">
@@ -13,16 +13,14 @@
 
 # JunoLint
 
-ESLint 9 config for Angular. It lints TypeScript and HTML templates: attribute order and wrapping, sibling spacing, nesting depth, class member order, grouped class fields, and a few naming rules. Most layout rules fix themselves with `eslint --fix`.
+Shareable [ESLint 9](https://eslint.org/) flat config for Angular. It lints TypeScript and HTML templates. Most layout rules fix themselves with `eslint --fix`.
+
+Node 20.19+, ESLint 9, and TypeScript 5 are required. `junolint` brings typescript-eslint, angular-eslint, and the stylistic plugins with it.
 
 ```js
 // eslint.config.js
 module.exports = require('junolint');
 ```
-
-ESLint is a peer dependency. `junolint` brings typescript-eslint, angular-eslint, and the stylistic plugins with it.
-
-Full rule list and options: [RULES.md](RULES.md).
 
 ## Install
 
@@ -30,21 +28,17 @@ Full rule list and options: [RULES.md](RULES.md).
 npm install -D eslint junolint
 ```
 
-From a local clone:
-
-```bash
-npm install -D eslint junolint@file:../JunoLint
-```
+Install `typescript` as well if the project does not already have it.
 
 ## Setup
 
-CommonJS:
+CommonJS (`eslint.config.js`):
 
 ```js
 module.exports = require('junolint');
 ```
 
-ESM:
+ESM (`eslint.config.mjs`):
 
 ```js
 import junolint from 'junolint';
@@ -52,7 +46,7 @@ import junolint from 'junolint';
 export default junolint;
 ```
 
-Extra ignores or different file globs:
+Add ignores or change file globs:
 
 ```js
 const { config } = require('junolint');
@@ -70,7 +64,7 @@ TypeScript only (no Angular templates):
 module.exports = require('junolint').configs.typescript;
 ```
 
-Or spread the config and add your own bits:
+Or spread the recommended config and add your own blocks:
 
 ```js
 module.exports = [
@@ -79,7 +73,9 @@ module.exports = [
 ];
 ```
 
-## Changing a rule
+Default ignores already include `.angular`, `android`, `generated`, `dist`, `migrations`, and `release`.
+
+## Override a rule
 
 Spread the config, then set `rules`. Values are `'off'`, `'warn'`, `'error'`, or `[severity, options]`.
 
@@ -90,34 +86,49 @@ module.exports = [
     files: ['**/*.html'],
     rules: {
       'junolint/template-sibling-spacing': 'off',
-      'junolint/template-attribute-wrapping': 'warn',
-      'junolint/template-max-nesting': ['error', { max: 5 }],
-      '@angular-eslint/template/prefer-ngsrc': 'error'
+      'junolint/template-max-nesting': ['error', { max: 5 }]
     }
   },
   {
     files: ['**/*.ts'],
     rules: {
-      'junolint/no-maybe-in-naming': 'off',
-      'junolint/no-leading-the': 'off',
-      'junolint/prefer-sentence-names': ['warn', { minLength: 0 }],
-      'junolint/prefer-sentence-function-names': ['warn', { minLength: 0 }],
-      'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }],
+      'junolint/no-magic-numbers': ['error', { allowed: [404, 500] }],
       '@typescript-eslint/no-explicit-any': 'warn'
     }
   }
 ];
 ```
 
-Works for any rule the config enables. See [RULES.md](RULES.md).
+Every rule the config enables can be changed this way. The full catalog is in [RULES.md](https://github.com/Myxelium/JunoLint/blob/main/RULES.md).
 
 ## Custom rules
 
-These ship on the `junolint` plugin. Most are `error` and support `--fix`.
+These ship on the `junolint` plugin.
+
+| Rule | Default | `--fix` |
+| --- | --- | --- |
+| `junolint/template-attribute-wrapping` | error | yes |
+| `@angular-eslint/template/attributes-order` | error | yes |
+| `junolint/template-sibling-spacing` | error | yes |
+| `junolint/template-max-nesting` | warn | no |
+| `junolint/member-ordering` | error | yes (not fields) |
+| `junolint/grouped-class-fields` | error | yes |
+| `junolint/sort-imports` | error | yes |
+| `junolint/explicit-function-return-type` | error | yes (void / never / literals / `as`) |
+| `junolint/component-own-folder` | error | yes (CLI) |
+| `junolint/component-max-external-types` | warn | no |
+| `junolint/no-unicode-symbols` | error | yes |
+| `junolint/no-maybe-in-naming` | error | no |
+| `junolint/no-leading-the` | error | no |
+| `junolint/no-magic-numbers` | error | no |
+| `junolint/no-deprecated` | error | no |
+| `junolint/prefer-sentence-names` | off | no |
+| `junolint/prefer-sentence-function-names` | off | no |
+| `junolint/decompose-complex-expressions` | off | no |
 
 ### `junolint/template-attribute-wrapping`
 
-error. One or two attributes stay on one line. Three or more: one per line, `>` on its own line, same indent as the file.
+One or two attributes stay on one line. Three or more wrap: one per line, `>` on its own line.
 
 ```html
 <!-- before -->
@@ -133,7 +144,7 @@ error. One or two attributes stay on one line. Three or more: one per line, `>` 
 
 ### `@angular-eslint/template/attributes-order`
 
-error. Per element: outputs, two-way, `#ref`, inputs, then attributes. `--fix` only touches that element.
+Per element: structural, outputs, two-way, `#ref`, inputs, then attributes.
 
 ```html
 <!-- before -->
@@ -155,7 +166,7 @@ error. Per element: outputs, two-way, `#ref`, inputs, then attributes. `--fix` o
 
 ### `junolint/template-sibling-spacing`
 
-error. Blank line between multiline siblings. Single-line siblings stay packed. No extra blank line after `<parent>` or before `</parent>`. Indent follows the file.
+Blank line between multiline siblings. Single-line siblings stay packed.
 
 ```html
 <!-- before -->
@@ -180,28 +191,24 @@ error. Blank line between multiline siblings. Single-line siblings stay packed. 
 </section>
 ```
 
-Single-line siblings are left alone:
-
-```html
-<nav>
-  <a>Home</a>
-  <a>About</a>
-</nav>
-```
-
 ### `junolint/template-max-nesting`
 
-warn. Max 7 real elements from the template root. `@if`, `@for`, `@switch`, `@defer`, `ng-container`, and `ng-template` do not count.
+Warns past 7 real elements from the template root. `@if`, `@for`, `@switch`, `@defer`, `ng-container`, and `ng-template` do not count.
+
+```js
+'junolint/template-max-nesting': ['warn', { max: 5 }]
+```
 
 ### `junolint/member-ordering`
 
-error. Fields and `inject()` keep the order you wrote them. Then constructor, lifecycle, public methods, private methods. `--fix` does not move fields.
+Fields and `inject()` keep the order you wrote them. Then constructor, `ngOnInit`, other lifecycle hooks, public methods, private methods, and `ngOnDestroy` last. `--fix` does not move fields.
 
 ```ts
 // before
 export class Example {
   save() {}
   private readonly http = inject(HttpClient);
+  ngOnDestroy() {}
   ngOnInit() {}
   constructor() {}
   private helper() {}
@@ -218,12 +225,14 @@ export class Example {
   save() {}
 
   private helper() {}
+
+  ngOnDestroy() {}
 }
 ```
 
 ### `junolint/grouped-class-fields`
 
-error. Consecutive single-line class fields that share a top-level initializer call stay packed. Different calls get one blank line between groups. `input.required` counts as `input` (same for `viewChild.required` → `viewChild`). If a field already spans more than one line, blank lines around it are left alone. Fields are not reordered. Applies to every class. `--fix` adjusts blank lines.
+Consecutive single-line fields that share a top-level initializer call stay packed. Different calls get one blank line between groups. `input.required` counts as `input`. Fields are not reordered.
 
 ```ts
 // before
@@ -250,119 +259,151 @@ export class Example {
 }
 ```
 
+### `junolint/sort-imports`
+
+Packages first (A–Z), then a blank line, then relative paths (`../` before `./`). Named specifiers inside `{ }` are sorted too. Side-effect imports stay put.
+
+```ts
+// before
+import { Router } from '@angular/router';
+import { Input, Component } from '@angular/core';
+import { UserService } from './user.service';
+import { CommonModule } from '@angular/common';
+
+// after eslint --fix
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { UserService } from './user.service';
+```
+
+### `junolint/explicit-function-return-type`
+
+Functions and methods must write a return type. Constructors, setters, and callbacks passed into a call are skipped unless you set `checkCallbacks`. `--fix` fills in `void`, `never`, a primitive literal, or an `as` type when every path is obvious.
+
+```ts
+// before
+function save() {}
+const count = () => 1;
+async function load() {
+  return getUser() as User;
+}
+
+// after eslint --fix
+function save(): void {}
+const count = (): number => 1;
+async function load(): Promise<User> {
+  return getUser() as User;
+}
+
+// still reported, no --fix
+function read() {
+  return getUser();
+}
+```
+
+```js
+'junolint/explicit-function-return-type': ['error', { checkCallbacks: true, allowedNames: ['legacyAdapter'] }]
+```
+
+### `junolint/component-own-folder`
+
+One `@Component` as a direct child of any folder is fine. A second differently named component must move into its own subfolder, unless the name before the first `.` matches the folder (`login/` keeps `login.component.ts` and `login-page.component.ts`). CLI `eslint --fix` moves the files and rewrites relative imports.
+
+```
+login/login-page.component.ts
+login/Logout.component.ts
+
+# after eslint --fix
+login/login-page.component.ts
+login/Logout/Logout.component.ts
+```
+
+```js
+'junolint/component-own-folder': ['error', { suffixes: ['component', 'page'] }]
+```
+
+### `junolint/component-max-external-types`
+
+A `@Component` file may keep two interfaces, type aliases, or enums next to the class. A third one belongs in a types file.
+
+```ts
+interface UserRow {
+  name: string;
+}
+
+type Mode = 'edit' | 'view';
+
+@Component({ selector: 'app-user-card', template: '<p>Hi</p>' })
+export class UserCardComponent {}
+
+// fails: a third type outside the component
+enum Status {
+  Active,
+  Idle
+}
+```
+
+```js
+'junolint/component-max-external-types': ['warn', { max: 2 }]
+```
+
 ### `junolint/no-unicode-symbols`
 
-error. Replaces en/em dashes, `...` lookalikes, and arrows with ASCII (`-`, `...`, `->`, `<-`).
+Replaces en/em dashes, ellipsis, and arrows with ASCII (`-`, `...`, `->`, `<-`, `=>`).
 
 ### `junolint/no-maybe-in-naming`
 
-error. Names like `maybeUser` fail. Pick something that says what the value is.
+Names that contain `maybe` fail. Use a name that states what the value is.
 
 ### `junolint/no-leading-the`
 
-error. Names must not start with the word `the`. `theHttpClient` fails; `themeStudio` passes because the first word is `theme`, not `the`. Applies to variables, parameters, class fields, functions, and methods.
+Names must not start with the word `the`. `theHttpClient` fails; `themeStudio` and `loadTheRecord` pass.
+
+### `junolint/no-magic-numbers`
+
+Bare numbers in expressions must be common values (`-2` to `2`, plus powers of ten such as `10`, `100`, `1000`) or extracted to a name.
 
 ```ts
 // fails
-const theHttpClient = createClient();
-function theLoader() {}
-class Example {
-  theCache() {}
-}
-
-// passes: the is part of a longer word, or not the first word
-const themeStudio = createStudio();
-const theoreticalLimit = 1;
-function loadTheRecord() {}
-```
-
-### `junolint/prefer-sentence-names`
-
-off. Push self-explaining names so other developers can tell what a value is without hunting for context. A single word (`user`, `data`, `configuration`) fails. A sentence of two or more camelCase or snake_case words passes. Applies to variables, parameters, and class fields.
-
-`minLength` is an allowance, not a target: names shorter than it skip the check (`id`, `i`). Default is `0`, so short names are flagged.
-
-```ts
-// fails when enabled: other people cannot tell what this is
-const user = load();
-const data = load();
-const configuration = load();
-
-// passes: the name is the explanation
-const theCurrentlyLoggedInUser = load();
-const payloadFromTheServer = load();
-```
-
-```js
-'junolint/prefer-sentence-names': ['warn', { minLength: 0, exceptions: ['timestamp'] }]
-```
-
-### `junolint/prefer-sentence-function-names`
-
-off. Same idea as `prefer-sentence-names`, for functions and methods. A single word (`save`, `load`, `configuration`) fails. A sentence of two or more camelCase or snake_case words passes. Applies to function declarations, class methods, object methods, and interface method signatures. Constructors are skipped. Variables and class fields stay with `prefer-sentence-names`.
-
-```ts
-// fails when enabled
-function save() {}
-class Example {
-  load() {}
-}
+setTimeout(handler, 2000);
+if (status === 404) {}
 
 // passes
-function saveTheDocument() {}
-class Example {
-  loadTheRecord() {}
-}
+setTimeout(handler, 2 * 1000);
+const notFoundStatus = 404;
+if (status === notFoundStatus) {}
+const percent = ratio * 100;
 ```
 
 ```js
-'junolint/prefer-sentence-function-names': ['warn', { minLength: 0, exceptions: ['timestamp'] }]
+'junolint/no-magic-numbers': ['error', { allowed: [404, 500] }]
 ```
 
-### `junolint/decompose-complex-expressions`
+### `junolint/no-deprecated`
 
-off. Suggests extracting independent or nested computations into named steps. It does not count function calls, chain length, or AST nodes. Fluent APIs, array pipelines, Promise chains, and RxJS `pipe` are one compositional unit; complexity inside a stage is what matters. Two nested calls (`formatDate(parseDate(input))`) and object literals with several simple properties stay intact.
-
-Enable it yourself. It is not on in the default config.
+Uses of a name marked `@deprecated` in JSDoc fail. Declaring something deprecated is fine. `allow` skips exact names. With type-aware linting (`parserOptions.projectService: true`), imported and library APIs are checked too.
 
 ```ts
-// fails when enabled: several independent computations in one expression
-const result = createReport(
-  calculateRevenue(orders),
-  calculateExpenses(expenses),
-  formatDate(startDate),
-  getUserName(user)
-);
+/** @deprecated Use saveDocument instead */
+function saveLegacy() {}
 
-// fails when enabled: nested transformations with no names
-const result = formatUser(normalizeUser(calculateUserScore(user)));
-
-// passes: fluent / pipeline composition
-const names = users.filter(isActive).map(user => user.name);
-const users$ = source$.pipe(filter(isActive), map(toUser), shareReplay(1));
-
-// passes: a natural two-step wrap, lookups, short conditions
-const parsed = formatDate(parseDate(input));
-const canProceed = user?.active && hasPermission(user);
+saveLegacy(); // fails
 ```
 
 ```js
-'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }]
+'junolint/no-deprecated': ['error', { allow: ['legacyAdapter'] }]
 ```
 
-Raise `threshold` to complain less. There is no `--fix`; automatic extraction is unsafe around side effects and short-circuiting.
+### Off by default
 
-| Rule | Default | `--fix` |
-| --- | --- | --- |
-| `junolint/template-attribute-wrapping` | error | yes |
-| `@angular-eslint/template/attributes-order` | error | yes |
-| `junolint/template-sibling-spacing` | error | yes |
-| `junolint/template-max-nesting` | warn | no |
-| `junolint/member-ordering` | error | yes (not fields) |
-| `junolint/grouped-class-fields` | error | yes |
-| `junolint/no-unicode-symbols` | error | yes |
-| `junolint/no-maybe-in-naming` | error | no |
-| `junolint/no-leading-the` | error | no |
-| `junolint/prefer-sentence-names` | off | no |
-| `junolint/prefer-sentence-function-names` | off | no |
-| `junolint/decompose-complex-expressions` | off | no |
+`junolint/prefer-sentence-names` and `junolint/prefer-sentence-function-names` require two or more camelCase or snake_case words (`currentlyLoggedInUser`, `saveTheDocument`). A single word (`user`, `save`) fails.
+
+`junolint/decompose-complex-expressions` asks you to extract independent or nested computations. Fluent pipelines and RxJS `pipe` are left alone. Raise `threshold` (default `5`) to complain less.
+
+```js
+'junolint/prefer-sentence-names': ['warn', { minLength: 0, exceptions: ['timestamp'] }],
+'junolint/prefer-sentence-function-names': ['warn', { minLength: 0 }],
+'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }]
+```

@@ -3,10 +3,11 @@
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
-const stylisticTs = require('@stylistic/eslint-plugin-ts');
-const stylisticJs = require('@stylistic/eslint-plugin-js');
+const stylistic = require('@stylistic/eslint-plugin');
 const newlines = require('eslint-plugin-import-newlines');
 const plugin = require('./plugin');
+
+const stylisticPlugin = stylistic.default ?? stylistic;
 
 const DEFAULT_IGNORES = [
   '**/.angular/**',
@@ -21,9 +22,15 @@ const typescriptRules = {
   'junolint/no-unicode-symbols': 'error',
   'junolint/no-maybe-in-naming': 'error',
   'junolint/no-leading-the': 'error',
+  'junolint/no-magic-numbers': 'error',
+  'junolint/no-deprecated': 'error',
   'junolint/prefer-sentence-names': 'off',
   'junolint/prefer-sentence-function-names': 'off',
   'junolint/decompose-complex-expressions': 'off',
+  'junolint/component-own-folder': 'error',
+  'junolint/component-max-external-types': 'warn',
+  'junolint/explicit-function-return-type': 'error',
+  'junolint/sort-imports': 'error',
   'junolint/member-ordering': 'error',
   'junolint/grouped-class-fields': 'error',
   '@typescript-eslint/no-extraneous-class': 'off',
@@ -32,7 +39,7 @@ const typescriptRules = {
   '@typescript-eslint/array-type': ['error', { default: 'array' }],
   '@typescript-eslint/consistent-type-definitions': 'error',
   '@typescript-eslint/dot-notation': 'off',
-  '@stylistic/ts/indent': ['error', 2, {
+  '@stylistic/indent': ['error', 2, {
     ignoredNodes: [
       'TSTypeParameterInstantiation',
       'FunctionExpression > .params[decorators.length > 0]',
@@ -41,76 +48,74 @@ const typescriptRules = {
     ],
     SwitchCase: 1
   }],
-  '@stylistic/ts/member-delimiter-style': ['error', {
+  '@stylistic/member-delimiter-style': ['error', {
     multiline: { delimiter: 'semi', requireLast: true },
     singleline: { delimiter: 'semi', requireLast: false }
   }],
   '@typescript-eslint/member-ordering': 'off',
   '@typescript-eslint/no-empty-function': 'off',
-  '@typescript-eslint/no-empty-interface': 'error',
   '@typescript-eslint/no-explicit-any': 'error',
   '@typescript-eslint/no-invalid-this': 'error',
   '@typescript-eslint/no-namespace': 'error',
   '@typescript-eslint/prefer-namespace-keyword': 'error',
   '@typescript-eslint/no-unused-expressions': 'error',
   '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true }],
-  '@typescript-eslint/no-var-requires': 'error',
   '@typescript-eslint/prefer-for-of': 'error',
   '@typescript-eslint/prefer-function-type': 'error',
-  '@stylistic/ts/quotes': ['error', 'single', { avoidEscape: true }],
-  '@stylistic/ts/semi': ['error', 'always'],
-  '@stylistic/ts/type-annotation-spacing': 'error',
+  '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+  '@stylistic/semi': ['error', 'always'],
+  '@stylistic/type-annotation-spacing': 'error',
   '@typescript-eslint/unified-signatures': 'error',
-  '@stylistic/js/array-bracket-spacing': 'error',
-  '@stylistic/ts/comma-dangle': ['error', 'never'],
-  '@stylistic/ts/comma-spacing': 'error',
-  '@stylistic/js/comma-style': 'error',
+  '@stylistic/array-bracket-spacing': 'error',
+  '@stylistic/comma-dangle': ['error', 'never'],
+  '@stylistic/comma-spacing': 'error',
+  '@stylistic/comma-style': 'error',
   complexity: ['warn', { max: 20 }],
   curly: 'off',
-  'eol-last': 'error',
+  '@stylistic/eol-last': 'error',
   'id-denylist': ['warn', 'e', 'cb', 'i', 'c', 'any', 'string', 'String', 'Undefined', 'undefined', 'callback'],
-  'max-len': ['error', { code: 150, ignoreComments: true }],
-  'new-parens': 'error',
-  'newline-per-chained-call': 'error',
+  '@stylistic/max-len': ['error', { code: 150, ignoreComments: true }],
+  '@stylistic/new-parens': 'error',
+  '@stylistic/newline-per-chained-call': 'error',
   'no-bitwise': 'off',
   'no-cond-assign': 'error',
   'no-empty': 'off',
   'no-eval': 'error',
-  '@stylistic/js/no-multi-spaces': 'error',
-  '@stylistic/js/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],
+  '@stylistic/no-multi-spaces': 'error',
+  '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],
   'no-new-wrappers': 'error',
   'no-restricted-imports': ['error', 'rxjs/Rx'],
   'no-throw-literal': 'error',
-  'no-trailing-spaces': 'error',
+  '@stylistic/no-trailing-spaces': 'error',
   'no-undef-init': 'error',
   'no-unsafe-finally': 'error',
   'no-var': 'error',
   'one-var': ['error', 'never'],
   'prefer-const': 'error',
-  '@stylistic/ts/space-before-blocks': 'error',
-  '@stylistic/js/space-before-function-paren': ['error', {
+  '@stylistic/space-before-blocks': 'error',
+  '@stylistic/space-before-function-paren': ['error', {
     anonymous: 'never',
     asyncArrow: 'always',
     named: 'never'
   }],
-  '@stylistic/ts/space-infix-ops': 'error',
-  '@stylistic/js/space-in-parens': 'error',
-  '@stylistic/js/space-unary-ops': 'error',
-  '@stylistic/js/spaced-comment': ['error', 'always', { markers: ['/'] }],
-  '@stylistic/js/array-element-newline': ['error', {
+  '@stylistic/space-infix-ops': 'error',
+  '@stylistic/space-in-parens': 'error',
+  '@stylistic/space-unary-ops': 'error',
+  '@stylistic/spaced-comment': ['error', 'always', { markers: ['/'] }],
+  '@stylistic/array-element-newline': ['error', {
     multiline: true,
     minItems: 3
   }],
-  '@stylistic/js/array-bracket-newline': ['error', {
+  '@stylistic/array-bracket-newline': ['error', {
     multiline: true,
     minItems: 3
   }],
   'import-newlines/enforce': ['error', 2],
-  '@stylistic/js/block-spacing': ['error', 'always'],
-  'nonblock-statement-body-position': ['error', 'below'],
-  'max-statements-per-line': ['error', { max: 1 }],
+  '@stylistic/block-spacing': ['error', 'always'],
+  '@stylistic/nonblock-statement-body-position': ['error', 'below'],
+  '@stylistic/max-statements-per-line': ['error', { max: 1 }],
   'id-length': ['error', { min: 2, properties: 'never', exceptions: ['_', 'x', 'y'] }],
-  'padding-line-between-statements': [
+  '@stylistic/padding-line-between-statements': [
     'error',
     { blankLine: 'always', prev: '*', next: 'if' },
     { blankLine: 'always', prev: 'if', next: '*' },
@@ -185,8 +190,9 @@ function createConfig(options = {}) {
     {
       files: tsFiles,
       plugins: {
-        '@stylistic/ts': stylisticTs,
-        '@stylistic/js': stylisticJs,
+        '@stylistic': stylisticPlugin,
+        '@stylistic/js': stylisticPlugin,
+        '@stylistic/ts': stylisticPlugin,
         'import-newlines': newlines,
         junolint: plugin
       },
@@ -199,6 +205,7 @@ function createConfig(options = {}) {
       ],
       ...(includeAngular ? { processor: angular.processInlineTemplates } : {}),
       rules: {
+        ...stylisticPlugin.configs['disable-legacy'].rules,
         ...typescriptRules,
         ...(includeAngular ? angularTypescriptRules : {})
       }
