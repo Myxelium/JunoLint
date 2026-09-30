@@ -2,6 +2,8 @@ export interface JunoLintOptions {
   angular?: boolean;
   tsFiles?: string[];
   htmlFiles?: string[];
+  jsFiles?: string[];
+  styleFiles?: string[];
   ignores?: string[];
 }
 

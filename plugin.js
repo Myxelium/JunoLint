@@ -51,6 +51,7 @@ module.exports = {
     'decompose-complex-expressions': require('./rules/decompose-complex-expressions'),
     'component-own-folder': require('./rules/component-own-folder'),
     'component-max-external-types': require('./rules/component-max-external-types'),
+    ...require('./rules/angular-file-naming').rules,
     'explicit-function-return-type': require('./rules/explicit-function-return-type'),
     'sort-imports': require('./rules/sort-imports'),
     'template-sibling-spacing': require('./rules/template-sibling-spacing'),

@@ -46,7 +46,7 @@ flowchart TB
   HTML --> H3["package overrides"]
 ```
 
-`configs.typescript` skips the Angular boxes. `config({ ignores, tsFiles, htmlFiles, angular })` changes globs or turns Angular off. See the [README](README.md#setup).
+`configs.typescript` skips the Angular boxes. `config({ ignores, tsFiles, htmlFiles, jsFiles, styleFiles, angular })` changes globs or turns Angular off. See the [README](README.md#setup).
 
 Default ignores: `**/.angular/**`, `**/android/**`, `**/generated/*`, `**/dist/**`, `**/migrations/**`, `release/**`.
 
@@ -71,6 +71,8 @@ Examples: [README](README.md#custom-rules).
 | `junolint/decompose-complex-expressions` | TS | off `{ threshold: 5 }` | no |
 | `junolint/component-own-folder` | TS | error | yes (CLI `--fix`) |
 | `junolint/component-max-external-types` | TS | warn `{ max: 2 }` | no |
+| `junolint/angular-file-naming` | TS, JS, HTML, CSS | warn | no |
+| `junolint/bare-src-file-naming` | TS, JS, HTML, CSS | off | no |
 | `junolint/explicit-function-return-type` | TS | error | yes (void / never / literals / `as`) |
 | `junolint/sort-imports` | TS | error | yes |
 
@@ -91,6 +93,8 @@ Examples: [README](README.md#custom-rules).
 'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }],
 'junolint/component-own-folder': 'warn',
 'junolint/component-max-external-types': ['warn', { max: 2 }],
+'junolint/angular-file-naming': ['warn', { allowedNames: ['helper', 'index.ts'] }],
+'junolint/bare-src-file-naming': ['error', { allowedNames: ['index', 'main.ts'] }],
 'junolint/explicit-function-return-type': ['error', { checkCallbacks: true, allowedNames: ['legacyAdapter'] }],
 'junolint/sort-imports': 'warn'
 ```
@@ -112,6 +116,10 @@ Examples: [README](README.md#custom-rules).
 `component-own-folder` allows one `@Component` as a direct child of any folder. If two or more differently named components share a folder, each extra one must move into a subfolder named from its TypeScript file, unless the name before the first `.` matches the parent folder (`login/` keeps `login.service.ts`, `login.component.ts`, and `login-page.component.ts`; `Logout.component.ts` moves). Typed siblings that are not a `component` or `page` are not counted as extra components. CLI `eslint --fix` creates that folder, moves the component files (including a spec), and rewrites relative imports. The editor lightbulb cannot move files.
 
 `component-max-external-types` warns when a file with `@Component` declares more than two interfaces, type aliases, or enums outside the class. The first two in source order stay; each extra one is reported. Imports, re-exports, helper classes, and types nested in functions do not count. Spec and `.d.ts` files are skipped. `max` changes the allowance. No `--fix`.
+
+`angular-file-naming` warns when a `*.*.*` code file uses a type suffix that is not an Angular file type (`user.helper.ts`). Known suffixes are `component`, `page`, `service`, `directive`, `pipe`, `guard`, `interceptor`, `resolver`, `routes`, `config`, and `module`. Tests keep the same name plus `.spec.ts` (`testSuffixes` can add `.test.ts`). Model files (`user.ts`) are `*.*` and do not warn. `allowedNames` skips an exact file (`index.ts`), a stem (`index`), or an extra suffix (`helper`). `suffixes` replaces the known list.
+
+`bare-src-file-naming` is off. When enabled, a bare `*.*` name inside `src/` fails (`user.ts`, `about.html`). `user.service.ts` passes. `allowedNames` and `srcFolder` (default `src`) are configurable. No `--fix`.
 
 `sort-imports` sorts import declarations alphabetically: packages first, then relative paths (`../` before `./`). Named specifiers inside `{ }` are sorted the same way. `import type` from the same module sits after the value import. Side-effect imports (`import './polyfills'`) stay where they are and are not reordered. `--fix`.
 

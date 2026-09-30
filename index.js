@@ -29,6 +29,8 @@ const typescriptRules = {
   'junolint/decompose-complex-expressions': 'off',
   'junolint/component-own-folder': 'error',
   'junolint/component-max-external-types': 'warn',
+  'junolint/angular-file-naming': 'warn',
+  'junolint/bare-src-file-naming': 'off',
   'junolint/explicit-function-return-type': 'error',
   'junolint/sort-imports': 'error',
   'junolint/member-ordering': 'error',
@@ -158,6 +160,8 @@ const TEMPLATE_ATTRIBUTE_ORDER = [
 
 const angularTemplateRules = {
   'junolint/no-unicode-symbols': 'error',
+  'junolint/angular-file-naming': 'warn',
+  'junolint/bare-src-file-naming': 'off',
   'junolint/template-sibling-spacing': 'error',
   'junolint/template-max-nesting': 'warn',
   'junolint/template-attribute-wrapping': 'error',
@@ -176,10 +180,31 @@ const angularTemplateRules = {
   '@angular-eslint/template/no-call-expression': 'off'
 };
 
+const filenameOnlyParser = {
+  parse() {
+    return {
+      type: 'Program',
+      body: [],
+      sourceType: 'module',
+      loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
+      range: [0, 0],
+      tokens: [],
+      comments: []
+    };
+  }
+};
+
+const filenameNamingRules = {
+  'junolint/angular-file-naming': 'warn',
+  'junolint/bare-src-file-naming': 'off'
+};
+
 function createConfig(options = {}) {
   const includeAngular = options.angular !== false;
   const tsFiles = options.tsFiles ?? ['**/*.ts'];
   const htmlFiles = options.htmlFiles ?? ['**/*.html'];
+  const jsFiles = options.jsFiles ?? ['src/**/*.{js,mjs,cjs}'];
+  const styleFiles = options.styleFiles ?? ['src/**/*.{css,scss,sass,less}'];
   const ignores = [
     ...DEFAULT_IGNORES,
     ...(options.ignores ?? [])
@@ -209,6 +234,23 @@ function createConfig(options = {}) {
         ...typescriptRules,
         ...(includeAngular ? angularTypescriptRules : {})
       }
+    },
+    {
+      files: jsFiles,
+      plugins: { junolint: plugin },
+      languageOptions: {
+        parserOptions: {
+          ecmaVersion: 'latest',
+          sourceType: 'module'
+        }
+      },
+      rules: filenameNamingRules
+    },
+    {
+      files: styleFiles,
+      plugins: { junolint: plugin },
+      languageOptions: { parser: filenameOnlyParser },
+      rules: filenameNamingRules
     }
   ];
 

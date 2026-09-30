@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/junolint"><img src="https://img.shields.io/npm/v/junolint.svg?logo=npm&label=npm" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/junolint"><img src="https://img.shields.io/npm/d18m/junolint" alt="NPM Downloads"></a>
   <a href="https://github.com/Myxelium/JunoLint"><img src="https://img.shields.io/badge/GitHub-Myxelium%2FJunoLint-181717?logo=github" alt="GitHub"></a>
 </p>
 
@@ -54,7 +55,9 @@ const { config } = require('junolint');
 module.exports = config({
   ignores: ['coverage/**'],
   htmlFiles: ['src/**/*.html'],
-  tsFiles: ['src/**/*.ts']
+  tsFiles: ['src/**/*.ts'],
+  jsFiles: ['src/**/*.js'],
+  styleFiles: ['src/**/*.scss']
 });
 ```
 
@@ -117,6 +120,8 @@ These ship on the `junolint` plugin.
 | `junolint/explicit-function-return-type` | error | yes (void / never / literals / `as`) |
 | `junolint/component-own-folder` | error | yes (CLI) |
 | `junolint/component-max-external-types` | warn | no |
+| `junolint/angular-file-naming` | warn | no |
+| `junolint/bare-src-file-naming` | off | no |
 | `junolint/no-unicode-symbols` | error | yes |
 | `junolint/no-maybe-in-naming` | error | no |
 | `junolint/no-leading-the` | error | no |
@@ -324,6 +329,59 @@ login/Logout/Logout.component.ts
 'junolint/component-own-folder': ['error', { suffixes: ['component', 'page'] }]
 ```
 
+### `junolint/angular-file-naming`
+
+Code files should use Angular type suffixes (`*.*.ts`). A file such as `user.helper.ts` warns because `helper` is not a known type. Models stay as `user.ts` and do not warn. Add names or extra suffixes with `allowedNames`.
+
+| Kind | Pattern | Example |
+| --- | --- | --- |
+| Component | `name.component.ts` | `user-profile.component.ts` |
+| Page | `name.page.ts` | `home.page.ts` |
+| Template | `name.component.html` | `user-profile.component.html` |
+| Styles | `name.component.scss` | `user-profile.component.scss` |
+| Service | `name.service.ts` | `user.service.ts` |
+| Directive | `name.directive.ts` | `auto-focus.directive.ts` |
+| Pipe | `name.pipe.ts` | `relative-time.pipe.ts` |
+| Guard | `name.guard.ts` | `auth.guard.ts` |
+| Interceptor | `name.interceptor.ts` | `auth.interceptor.ts` |
+| Resolver | `name.resolver.ts` | `user.resolver.ts` |
+| Model | `name.ts` | `user.ts` |
+| Routes | `name.routes.ts` | `admin.routes.ts` |
+| Config | `name.config.ts` | `app.config.ts` |
+| Module | `name.module.ts` | `app.module.ts` |
+| Test | same name + `.spec.ts` | `user.service.spec.ts` |
+
+```js
+'junolint/angular-file-naming': ['warn', {
+  allowedNames: ['helper', 'index.ts', 'main.ts'],
+  suffixes: [
+    'component',
+    'page',
+    'service',
+    'directive',
+    'pipe',
+    'guard',
+    'interceptor',
+    'resolver',
+    'routes',
+    'config',
+    'module',
+    'model'
+  ]
+}]
+```
+
+### `junolint/bare-src-file-naming`
+
+Off. When enabled, `user.ts` (a bare `*.*` name) inside `src/` fails. Typed names (`user.service.ts`) pass. Use this if you do not want model-style `name.ts` files in `src`.
+
+```js
+'junolint/bare-src-file-naming': ['error', {
+  allowedNames: ['index', 'main.ts', 'environment.ts'],
+  srcFolder: 'src'
+}]
+```
+
 ### `junolint/component-max-external-types`
 
 A `@Component` file may keep two interfaces, type aliases, or enums next to the class. A third one belongs in a types file.
@@ -398,11 +456,14 @@ saveLegacy(); // fails
 
 ### Off by default
 
+`junolint/bare-src-file-naming` is off. When enabled, bare `*.*` names inside `src/` fail (`user.ts`). Typed Angular names (`user.service.ts`) pass.
+
 `junolint/prefer-sentence-names` and `junolint/prefer-sentence-function-names` require two or more camelCase or snake_case words (`currentlyLoggedInUser`, `saveTheDocument`). A single word (`user`, `save`) fails.
 
 `junolint/decompose-complex-expressions` asks you to extract independent or nested computations. Fluent pipelines and RxJS `pipe` are left alone. Raise `threshold` (default `5`) to complain less.
 
 ```js
+'junolint/bare-src-file-naming': ['error', { allowedNames: ['index', 'main.ts'] }],
 'junolint/prefer-sentence-names': ['warn', { minLength: 0, exceptions: ['timestamp'] }],
 'junolint/prefer-sentence-function-names': ['warn', { minLength: 0 }],
 'junolint/decompose-complex-expressions': ['warn', { threshold: 5 }]
