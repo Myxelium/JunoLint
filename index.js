@@ -147,7 +147,7 @@ const angularTypescriptRules = {
 };
 
 // Matches metoyou/tools/sort-template-properties.js:
-// outputs → two-way → #ref → inputs → attributes.
+// outputs -> two-way -> #ref -> inputs -> attributes.
 // STRUCTURAL_DIRECTIVE is required by the rule schema (*ngIf / @if extras).
 const TEMPLATE_ATTRIBUTE_ORDER = [
   'STRUCTURAL_DIRECTIVE',

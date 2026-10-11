@@ -1,5 +1,18 @@
 'use strict';
 
+const MIN_SPACE_INDENT = 1;
+const MAX_SPACE_INDENT = 8;
+const DEFAULT_SPACE_INDENT = 2;
+const FOUR_SPACE_INDENT = 4;
+const THREE_SPACE_INDENT = 3;
+const SPACE_INDENT_CANDIDATES = [
+  DEFAULT_SPACE_INDENT,
+  FOUR_SPACE_INDENT,
+  MAX_SPACE_INDENT,
+  THREE_SPACE_INDENT,
+  MIN_SPACE_INDENT
+];
+
 const LAYOUT_TYPES = new Set([
   'Element',
   'Template',
@@ -138,14 +151,14 @@ function detectIndent(text) {
 
   const freq = new Map();
   for (const size of increases) {
-    if (typeof size !== 'number' || size < 1 || size > 8)
+    if (typeof size !== 'number' || size < MIN_SPACE_INDENT || size > MAX_SPACE_INDENT)
       continue;
     freq.set(size, (freq.get(size) || 0) + 1);
   }
 
-  let best = 2;
+  let best = DEFAULT_SPACE_INDENT;
   let bestCount = -1;
-  for (const candidate of [2, 4, 8, 3, 1]) {
+  for (const candidate of SPACE_INDENT_CANDIDATES) {
     const count = freq.get(candidate) || 0;
     if (count > bestCount) {
       best = candidate;

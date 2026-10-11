@@ -1,5 +1,9 @@
 'use strict';
 
+const CALL_PREFIX = 'call:';
+const NEW_PREFIX = 'new:';
+const EXPR_PREFIX = 'expr:';
+
 const FIELD_TYPES = new Set([
   'PropertyDefinition',
   'TSAbstractPropertyDefinition',
@@ -84,29 +88,29 @@ function groupKey(node) {
     value.type === 'OptionalCallExpression'
   ) {
     const name = calleeRootName(value.callee);
-    return name ? `call:${name}` : 'expr:CallExpression';
+    return name ? `${CALL_PREFIX}${name}` : `${EXPR_PREFIX}CallExpression`;
   }
 
   if (value.type === 'NewExpression') {
     const name = calleeRootName(value.callee);
-    return name ? `new:${name}` : 'expr:NewExpression';
+    return name ? `${NEW_PREFIX}${name}` : `${EXPR_PREFIX}NewExpression`;
   }
 
-  return `expr:${value.type}`;
+  return `${EXPR_PREFIX}${value.type}`;
 }
 
 function groupLabel(key) {
   if (!key)
     return 'other';
 
-  if (key.startsWith('call:'))
-    return key.slice(5);
+  if (key.startsWith(CALL_PREFIX))
+    return key.slice(CALL_PREFIX.length);
 
-  if (key.startsWith('new:'))
-    return `new ${key.slice(4)}`;
+  if (key.startsWith(NEW_PREFIX))
+    return `new ${key.slice(NEW_PREFIX.length)}`;
 
-  if (key.startsWith('expr:'))
-    return key.slice(5);
+  if (key.startsWith(EXPR_PREFIX))
+    return key.slice(EXPR_PREFIX.length);
 
   return key;
 }

@@ -201,7 +201,7 @@ async function main() {
     const spec = await lintPath(path.join(specHost, 'user-card.component.spec.ts'));
     const service = await lintPath(path.join(specHost, 'user.service.ts'));
     const pipe = await lintPath(path.join(specHost, 'user.pipe.ts'));
-    assert.equal(component.length, 0, 'typed siblings (spec, service, pipe, …) do not count as extra components');
+    assert.equal(component.length, 0, 'typed siblings (spec, service, pipe, ...) do not count as extra components');
     assert.equal(spec.length, 0, 'spec files are not linted as components');
     assert.equal(service.length, 0, 'service files are not linted as components');
     assert.equal(pipe.length, 0, 'other typed files are not linted as components');

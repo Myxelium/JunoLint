@@ -40,7 +40,8 @@ async function main() {
   );
 
   assert.equal(orderMessages.length, 1, 'exactly one element should be reported');
-  assert.ok(orderMessages[0].line < 8, 'report is on the first button, not the whole file');
+  const firstButtonMaxLine = 8;
+  assert.ok(orderMessages[0].line < firstButtonMaxLine, 'report is on the first button, not the whole file');
 
   const fixed = await lintHtml(source, true);
   const output = fixed.output ?? source;

@@ -1,12 +1,14 @@
 'use strict';
 
 // Four analysis modes, not a single AST-node count:
-// 1. Simple expression — lookups and literals (user.profile.name)
-// 2. Composition — fluent/pipeline method chains (.pipe(), .map().filter(), builders)
-// 3. Nested computation — free calls wrapping other calls (foo(bar(baz(x))))
-// 4. Independent computation — sibling non-trivial arguments (createReport(a(), b(), c()))
+// 1. Simple expression - lookups and literals (user.profile.name)
+// 2. Composition - fluent/pipeline method chains (.pipe(), .map().filter(), builders)
+// 3. Nested computation - free calls wrapping other calls (foo(bar(baz(x))))
+// 4. Independent computation - sibling non-trivial arguments (createReport(a(), b(), c()))
 
 const DEFAULT_THRESHOLD = 5;
+const MIXED_TERM_MINIMUM = 4;
+const NESTED_DEPTH_MINIMUM = 3;
 
 const WRAPPER_TYPES = new Set([
   'ChainExpression',
@@ -441,7 +443,7 @@ function createAnalyzer() {
 
     const mixed = terms.length > computational.length;
 
-    if (mixed && terms.length >= 4)
+    if (mixed && terms.length >= MIXED_TERM_MINIMUM)
       out.score += (computational.length - 1) + (terms.length - computational.length);
 
     return out;
@@ -614,7 +616,7 @@ function messageIdFor(analysis) {
   if (analysis.branching)
     return 'branchingComputations';
 
-  if (analysis.nested || analysis.nestedDepth >= 3)
+  if (analysis.nested || analysis.nestedDepth >= NESTED_DEPTH_MINIMUM)
     return 'nestedComputations';
 
   return 'complexExpression';

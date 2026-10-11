@@ -89,7 +89,7 @@ module.exports = {
   meta: {
     type: 'layout',
     docs: {
-      description: 'Put each attribute on its own line when a template tag has 3 or more attributes; keep 1–2 attributes on one line'
+      description: 'Put each attribute on its own line when a template tag has 3 or more attributes; keep 1-2 attributes on one line'
     },
     fixable: 'code',
     schema: [],

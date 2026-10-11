@@ -504,7 +504,7 @@ module.exports = {
     schema: [],
     messages: {
       incorrectOrder:
-        'Member "{{name}}" is in the wrong place. Fields keep source order (inject()/init safe); then constructor, ngOnInit, other lifecycle hooks, methods (public → private), and ngOnDestroy last.'
+        'Member "{{name}}" is in the wrong place. Fields keep source order (inject()/init safe); then constructor, ngOnInit, other lifecycle hooks, methods (public -> private), and ngOnDestroy last.'
     }
   },
   create(context) {

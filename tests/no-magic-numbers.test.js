@@ -7,6 +7,7 @@ const plugin = require('../plugin');
 const recommended = require('../index');
 
 const RULE = 'junolint/no-magic-numbers';
+const NOT_FOUND = 404;
 
 async function lintTs(source, ruleOptions) {
   const eslint = new ESLint({
@@ -107,15 +108,15 @@ async function main() {
     '}'
   ]), '404');
 
-  await assertValid('extra allowed', 'if (status === 404) {}\n', ['error', { allowed: [404] }]);
+  await assertValid('extra allowed', 'if (status === 404) {}\n', ['error', { allowed: [NOT_FOUND] }]);
   await assertInvalid(
     'extra allowed does not drop defaults',
     'setTimeout(handler, 250);\n',
     '250',
-    ['error', { allowed: [404] }]
+    ['error', { allowed: [NOT_FOUND] }]
   );
 
-  const commonStillAllowed = await lintTs('const percent = ratio * 100;\n', ['error', { allowed: [404] }]);
+  const commonStillAllowed = await lintTs('const percent = ratio * 100;\n', ['error', { allowed: [NOT_FOUND] }]);
   assert.equal(commonStillAllowed.length, 0, 'allowed extras should keep 100');
 
   console.log('no-magic-numbers: ok');

@@ -187,7 +187,7 @@ function createFileNamingRule(kind) {
       schema: SHARED_SCHEMA,
       messages: {
         unknownTypedName:
-          'File "{{name}}" uses the type suffix "{{suffix}}", which is not an Angular file type. Use a known suffix (component, service, …) or add it to allowedNames.',
+          'File "{{name}}" uses the type suffix "{{suffix}}", which is not an Angular file type. Use a known suffix (component, service, ...) or add it to allowedNames.',
         bareNameInSrc:
           'File "{{name}}" is a bare *.* name inside {{srcFolder}}/. Use an Angular type suffix (user.service.ts, user.component.ts) or add the name to allowedNames.'
       }

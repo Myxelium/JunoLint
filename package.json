@@ -62,7 +62,8 @@
     "rules/template-attribute-wrapping.js"
   ],
   "scripts": {
-    "test": "node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js && node tests/member-ordering.test.js && node tests/grouped-class-fields.test.js && node tests/template-layout.test.js && node tests/prefer-sentence-names.test.js && node tests/prefer-sentence-function-names.test.js && node tests/no-leading-the.test.js && node tests/no-magic-numbers.test.js && node tests/no-deprecated.test.js && node tests/decompose-complex-expressions.test.js && node tests/stylistic-migration.test.js && node tests/component-own-folder.test.js && node tests/component-max-external-types.test.js && node tests/explicit-function-return-type.test.js && node tests/sort-imports.test.js && node tests/angular-file-naming.test.js"
+    "lint": "eslint .",
+    "test": "eslint . && node -e \"const c = require('./index.js'); if (!Array.isArray(c) || c.length < 2) process.exit(1);\" && node tests/template-attribute-order.test.js && node tests/member-ordering.test.js && node tests/grouped-class-fields.test.js && node tests/template-layout.test.js && node tests/prefer-sentence-names.test.js && node tests/prefer-sentence-function-names.test.js && node tests/no-leading-the.test.js && node tests/no-magic-numbers.test.js && node tests/no-deprecated.test.js && node tests/decompose-complex-expressions.test.js && node tests/stylistic-migration.test.js && node tests/component-own-folder.test.js && node tests/component-max-external-types.test.js && node tests/explicit-function-return-type.test.js && node tests/sort-imports.test.js && node tests/angular-file-naming.test.js"
   },
   "engines": {
     "node": "^20.19.0 || ^22.13.0 || >=24"

@@ -3,29 +3,29 @@
 const { name, version } = require('./package.json');
 
 const FORBIDDEN_UNICODE_SYMBOLS = Object.freeze([
-  { char: '\u2013', name: 'Unicode en dash (–)', replacement: '-' },
-  { char: '\u2014', name: 'Unicode em dash (—)', replacement: '-' },
-  { char: '\u2026', name: 'Unicode ellipsis (…)', replacement: '...' },
-  { char: '\u2192', name: 'Unicode right arrow (→)', replacement: '->' },
-  { char: '\u2190', name: 'Unicode left arrow (←)', replacement: '<-' },
-  { char: '\u2194', name: 'Unicode left-right arrow (↔)', replacement: '<->' },
-  { char: '\u21d2', name: 'Unicode right double arrow (⇒)', replacement: '=>' },
-  { char: '\u21d0', name: 'Unicode left double arrow (⇐)', replacement: '<=' },
-  { char: '\u21d4', name: 'Unicode left-right double arrow (⇔)', replacement: '<=>' }
+  { char: '\u2013', name: 'Unicode en dash (\u2013)', replacement: '-' },
+  { char: '\u2014', name: 'Unicode em dash (\u2014)', replacement: '-' },
+  { char: '\u2026', name: 'Unicode ellipsis (\u2026)', replacement: '...' },
+  { char: '\u2192', name: 'Unicode right arrow (\u2192)', replacement: '->' },
+  { char: '\u2190', name: 'Unicode left arrow (\u2190)', replacement: '<-' },
+  { char: '\u2194', name: 'Unicode left-right arrow (\u2194)', replacement: '<->' },
+  { char: '\u21d2', name: 'Unicode right double arrow (\u21d2)', replacement: '=>' },
+  { char: '\u21d0', name: 'Unicode left double arrow (\u21d0)', replacement: '<=' },
+  { char: '\u21d4', name: 'Unicode left-right double arrow (\u21d4)', replacement: '<=>' }
 ]);
 
 function createReplaceFix(range, replacement) {
   return (fixer) => fixer.replaceTextRange(range, replacement);
 }
 
-const MAYBE_PATTERN = /maybe/i;
+const UNCERTAIN_WORD = /maybe/i;
 
-function identifierContainsMaybe(idName) {
-  return typeof idName === 'string' && MAYBE_PATTERN.test(idName);
+function identifierContainsUncertainWord(idName) {
+  return typeof idName === 'string' && UNCERTAIN_WORD.test(idName);
 }
 
 function checkIdentifier(context, node, idName) {
-  if (!identifierContainsMaybe(idName))
+  if (!identifierContainsUncertainWord(idName))
     return;
 
   context.report({
