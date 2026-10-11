@@ -541,7 +541,7 @@ module.exports = {
     }
   },
   create(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
     const options = context.options[0] ?? {};
     const optionsBag = {
       allowedNames: new Set(options.allowedNames ?? []),

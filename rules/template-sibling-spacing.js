@@ -130,7 +130,7 @@ module.exports = {
     }
   },
   create(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
     const text = sourceCode.text;
     const unit = detectIndent(text);
 

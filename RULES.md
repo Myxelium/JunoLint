@@ -2,7 +2,7 @@
 
 What this package turns on after you `require('junolint')`, and how to change it. Install and examples: [README](README.md).
 
-ESLint 9 flat config only. Spread the array, then override:
+ESLint 10 flat config only. Spread the array, then override:
 
 ```js
 module.exports = [
@@ -152,6 +152,7 @@ flowchart TB
 | `@angular-eslint/no-output-rename` | error |
 | `@angular-eslint/no-outputs-metadata-property` | error |
 | `@angular-eslint/prefer-inject` | error |
+| `@angular-eslint/prefer-on-push-component-change-detection` | error |
 | `@angular-eslint/prefer-standalone` | error |
 | `@angular-eslint/use-lifecycle-interface` | warn |
 | `@angular-eslint/use-pipe-transform-interface` | error |
@@ -334,7 +335,7 @@ eslint recommended, plus the ones with options. typescript-eslint turns some cor
 | `prefer-rest-params` | error |
 | `prefer-spread` | error |
 
-Also error from eslint recommended: `for-direction`, `no-async-promise-executor`, `no-case-declarations`, `no-compare-neg-zero`, `no-constant-binary-expression`, `no-constant-condition`, `no-control-regex`, `no-debugger`, `no-delete-var`, `no-dupe-else-if`, `no-duplicate-case`, `no-empty-character-class`, `no-empty-pattern`, `no-empty-static-block`, `no-ex-assign`, `no-extra-boolean-cast`, `no-fallthrough`, `no-global-assign`, `no-invalid-regexp`, `no-irregular-whitespace`, `no-loss-of-precision`, `no-misleading-character-class`, `no-nonoctal-decimal-escape`, `no-octal`, `no-prototype-builtins`, `no-regex-spaces`, `no-self-assign`, `no-shadow-restricted-names`, `no-sparse-arrays`, `no-unexpected-multiline`, `no-unsafe-optional-chaining`, `no-unused-labels`, `no-unused-private-class-members`, `no-useless-backreference`, `no-useless-catch`, `no-useless-escape`, `require-yield`, `use-isnan`, `valid-typeof`.
+Also error from eslint recommended: `for-direction`, `no-async-promise-executor`, `no-case-declarations`, `no-compare-neg-zero`, `no-constant-binary-expression`, `no-constant-condition`, `no-control-regex`, `no-debugger`, `no-delete-var`, `no-dupe-else-if`, `no-duplicate-case`, `no-empty-character-class`, `no-empty-pattern`, `no-empty-static-block`, `no-ex-assign`, `no-extra-boolean-cast`, `no-fallthrough`, `no-global-assign`, `no-invalid-regexp`, `no-irregular-whitespace`, `no-loss-of-precision`, `no-misleading-character-class`, `no-nonoctal-decimal-escape`, `no-octal`, `no-prototype-builtins`, `no-regex-spaces`, `no-self-assign`, `no-shadow-restricted-names`, `no-sparse-arrays`, `no-unassigned-vars`, `no-unexpected-multiline`, `no-unsafe-optional-chaining`, `no-unused-labels`, `no-unused-private-class-members`, `no-useless-assignment`, `no-useless-backreference`, `no-useless-catch`, `no-useless-escape`, `preserve-caught-error`, `require-yield`, `use-isnan`, `valid-typeof`.
 
 ```js
 complexity: ['warn', { max: 15 }],

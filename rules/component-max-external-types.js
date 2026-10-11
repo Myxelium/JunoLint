@@ -115,7 +115,7 @@ module.exports = {
 
     return {
       Program(node) {
-        const filename = context.physicalFilename || context.filename || context.getFilename();
+        const filename = context.physicalFilename || context.filename;
         if (isIgnoredSourceFile(filename))
           return;
 

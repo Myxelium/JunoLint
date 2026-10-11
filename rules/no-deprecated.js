@@ -112,17 +112,6 @@ function leadingDeprecated(sourceCode, node) {
   if (!node)
     return null;
 
-  const jsdoc = typeof sourceCode.getJSDocComment === 'function'
-    ? sourceCode.getJSDocComment(node)
-    : null;
-
-  if (jsdoc) {
-    const reason = extractDeprecatedReason(commentText(jsdoc));
-
-    if (reason !== null)
-      return reason;
-  }
-
   const comments = sourceCode.getCommentsBefore(node);
 
   for (let index = comments.length - 1; index >= 0; index -= 1) {
@@ -269,8 +258,8 @@ function findMemberInClass(classNode, name, instance) {
 }
 
 function findTypeAwareDeprecation(context, node) {
-  const sourceCode = context.sourceCode ?? context.getSourceCode();
-  const services = sourceCode.parserServices ?? context.parserServices;
+  const sourceCode = context.sourceCode;
+  const services = sourceCode.parserServices;
 
   if (!services || !services.program || !services.esTreeNodeToTSNodeMap)
     return null;
@@ -343,7 +332,7 @@ module.exports = {
     }
   },
   create(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
     const allowed = new Set(context.options[0]?.allow ?? []);
     const reported = new WeakSet();
 

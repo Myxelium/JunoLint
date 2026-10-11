@@ -39,7 +39,7 @@ module.exports = {
   },
   create(context) {
     const max = context.options[0]?.max ?? DEFAULT_MAX;
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
 
     function check(node) {
       if (!countsTowardNesting(node))

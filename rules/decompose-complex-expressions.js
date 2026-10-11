@@ -650,7 +650,7 @@ module.exports = {
   },
   create(context) {
     const threshold = context.options[0]?.threshold ?? DEFAULT_THRESHOLD;
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
     const analyze = createAnalyzer();
     const reported = new WeakSet();
 

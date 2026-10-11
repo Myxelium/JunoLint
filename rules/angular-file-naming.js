@@ -72,7 +72,7 @@ function normalizeName(value) {
 }
 
 function filenameOf(context) {
-  return context.physicalFilename || context.filename || context.getFilename();
+  return context.physicalFilename || context.filename;
 }
 
 function pathHasFolder(filePath, folderName) {

@@ -14,9 +14,9 @@
 
 # JunoLint
 
-Shareable [ESLint 9](https://eslint.org/) flat config for Angular. It lints TypeScript and HTML templates. Most layout rules fix themselves with `eslint --fix`.
+Shareable [ESLint 10](https://eslint.org/) flat config for Angular. It lints TypeScript and HTML templates. Most layout rules fix themselves with `eslint --fix`.
 
-Node 20.19+, ESLint 9, and TypeScript 5 are required. `junolint` brings typescript-eslint, angular-eslint, and the stylistic plugins with it.
+Node 20.19, 22.13+, or 24+, ESLint 10, and TypeScript 5 or 6.0 are required. `junolint` brings typescript-eslint, angular-eslint, and the stylistic plugins with it.
 
 ```js
 // eslint.config.js

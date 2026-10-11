@@ -592,11 +592,11 @@ module.exports = {
 
     return {
       Program(node) {
-        const filename = context.physicalFilename || context.filename || context.getFilename();
+        const filename = context.physicalFilename || context.filename;
         if (isIgnoredSourceFile(filename, suffixes))
           return;
 
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
+        const sourceCode = context.sourceCode;
         const componentClass = findComponentClass(node);
 
         if (!componentClass)
